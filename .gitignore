@@ -29,3 +29,11 @@
 *.opensdf
 *.sdf
 *.suo
+*.tlog
+*.pdb
+*.bi
+*.ilk
+*.log
+*.lastbuildstate
+*.manifest
+*.metagen
