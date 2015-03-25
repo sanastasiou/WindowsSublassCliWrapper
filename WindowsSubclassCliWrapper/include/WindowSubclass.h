@@ -43,8 +43,8 @@ namespace WindowsSubclassWrapper
     private:
         bool _hasError;
         std::wstring _lastError;
-        HWND _hWnd;                      //!< Handle of the windows we want to sublcass.
-        static bool(*_handler)(UINT msg);//!< External message handler.
+        HWND _hWnd;                                  //!< Handle of the windows we want to sublcass.
+        static bool(*_handler)(UINT, WPARAM, LPARAM);//!< External message handler.
 
         void ReportError(LPCWSTR pszFunction, DWORD dwError = NO_ERROR)
         {
@@ -84,7 +84,7 @@ namespace WindowsSubclassWrapper
                 return DefSubclassProc(hButton, message, wParam, lParam);
             default:
                 //return should be overriden by an exernal handle here
-                if (!_handler(message))
+                if (!_handler(message, wParam, lParam))
                 {
                     return DefSubclassProc(hButton, message, wParam, lParam);
                 }

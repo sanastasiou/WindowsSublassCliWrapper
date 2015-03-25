@@ -11,16 +11,16 @@ namespace WindowsSubclassWrapper
     {
     private:
         [System::Runtime::InteropServices::UnmanagedFunctionPointer(System::Runtime::InteropServices::CallingConvention::Cdecl)]
-        delegate bool MessageHandler(UINT message);
-        MessageHandler ^ _messageHandler;           //!< The delegate handle ( used so that GC doesn't collect the handler ).
-        WindowsSubclass * _subclass;                //!< The subclass instance.       
-        HWND _windowHandle;
+        delegate bool MessageHandler(System::UInt32, System::UIntPtr, System::IntPtr);
+        MessageHandler ^ _messageHandler;                                                                                        //!< The delegate handle ( used so that GC doesn't collect the handler ).
+        WindowsSubclass * _subclass;                                                                                             //!< The subclass instance.       
+        HWND _windowHandle;                                                                                                      //!< Handle of window to be sublassed.
 
         void RegisterCallback(HWND handle)
         {
             _messageHandler                = gcnew MessageHandler(this, &WindowSubclassCliWrapper::OnMessageReceived);
             System::IntPtr delegatePointer = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(_messageHandler);
-            _subclass                      = new WindowsSubclass(static_cast<bool(*)(UINT)>(delegatePointer.ToPointer()), handle);
+            _subclass                      = new WindowsSubclass(static_cast<bool(*)(UINT, WPARAM, LPARAM)>(delegatePointer.ToPointer()), handle);
             _subclass->OnSafeSubclass(_windowHandle);
         }
 
@@ -29,7 +29,7 @@ namespace WindowsSubclassWrapper
 
         WindowSubclassCliWrapper(HWND handle);
 
-        virtual bool OnMessageReceived(UINT message) = 0;
+        virtual bool OnMessageReceived(System::UInt32 msg, System::UIntPtr wParam, System::IntPtr lParam) = 0;
         
         ~WindowSubclassCliWrapper();
 

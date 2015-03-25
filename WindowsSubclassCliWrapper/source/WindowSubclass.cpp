@@ -2,5 +2,5 @@
 
 namespace WindowsSubclassWrapper
 {
-    bool(*WindowsSubclass::_handler)(UINT) = NULL;
+    bool(*WindowsSubclass::_handler)(UINT,WPARAM,LPARAM) = NULL;
 }
