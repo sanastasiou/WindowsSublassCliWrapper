@@ -37,3 +37,4 @@
 *.lastbuildstate
 *.manifest
 *.metagen
+*.cache
