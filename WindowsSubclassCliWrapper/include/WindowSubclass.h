@@ -11,7 +11,7 @@ namespace WindowsSubclassWrapper
     class WindowsSubclass
     {
     public:
-        WindowsSubclass(bool(*handler)(UINT msg), HWND windowHandle) :
+        WindowsSubclass(bool(*handler)(UINT, WPARAM, LPARAM), HWND windowHandle) :
             _hasError(false),
             _hWnd(windowHandle)
         {

@@ -38,3 +38,4 @@
 *.manifest
 *.metagen
 *.cache
+*.unsuccessfulbuild
