@@ -22,7 +22,7 @@ namespace WindowsSubclassWrapper
         {
             _hWnd = hWnd;
             UINT_PTR uIdSubclass = 0;
-            if (!SetWindowSubclass(_hWnd, NewSafeBtnProc, uIdSubclass, 0))
+            if (!SetWindowSubclass(_hWnd, NewSafeBtnProc, uIdSubclass, reinterpret_cast<DWORD_PTR>(this)))
             {
                 ReportError(L"SetWindowSubclass in OnSafeSubclass");
                 _hasError = true;
@@ -40,30 +40,17 @@ namespace WindowsSubclassWrapper
         {
             return _lastError;
         }
+
+        typedef bool(*procHandler)(UINT, WPARAM, LPARAM);   //!< Typedef for external message handler.
+        procHandler _handler;                               //!< External message handler.
     private:
         bool _hasError;
         std::wstring _lastError;
-        HWND _hWnd;                                  //!< Handle of the windows we want to sublcass.
-        static bool(*_handler)(UINT, WPARAM, LPARAM);//!< External message handler.
+        HWND _hWnd;                                         //!< Handle of the windows we want to sublcass.
 
-        void ReportError(LPCWSTR pszFunction, DWORD dwError = NO_ERROR)
-        {
-            std::wstringstream aErrorStream;
+        void ReportError(LPCWSTR pszFunction, DWORD dwError = NO_ERROR);
 
-            aErrorStream << "Function" << pszFunction << " failed : " << dwError;
-
-            _lastError = aErrorStream.str();
-        }        
-
-        void OnSafeUnsubclass(HWND hWnd)
-        {
-            UINT_PTR uIdSubclass = 0;
-            if (!RemoveWindowSubclass(_hWnd, NewSafeBtnProc, uIdSubclass))
-            {
-                ReportError(L"RemoveWindowSubclass in OnSafeUnsubclass");
-                return;
-            }
-        }
+        void OnSafeUnsubclass(HWND hWnd);
 
         static LRESULT CALLBACK NewSafeBtnProc(HWND hButton,
             UINT message,
@@ -83,8 +70,9 @@ namespace WindowsSubclassWrapper
                 RemoveWindowSubclass(hButton, NewSafeBtnProc, uIdSubclass);
                 return DefSubclassProc(hButton, message, wParam, lParam);
             default:
+                WindowsSubclass * router = reinterpret_cast<WindowsSubclass*>(dwRefData);
                 //return should be overriden by an exernal handle here
-                if (!_handler(message, wParam, lParam))
+                if (!router->_handler(message, wParam, lParam))
                 {
                     return DefSubclassProc(hButton, message, wParam, lParam);
                 }
