@@ -22,10 +22,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\WindowSubclassCliWrapper.cpp">
+    <ClCompile Include="source\WindowSubclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\WindowSubclass.cpp">
+    <ClCompile Include="source\WindowSubclassCliWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
